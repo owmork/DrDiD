@@ -37,7 +37,7 @@ DrDiD <- function(
   start_time <- Sys.time()
 
   # (a) Data pre-processing
-  dp <- DrDiD_preprocess(
+  dp <- preprocess(
     yname = yname,
     dname = dname,
     gname = gname,

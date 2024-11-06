@@ -19,12 +19,17 @@ get_attgt <- function(mods, df) {
 
   # Create list of tables for each group (treatment + control, pre + post)
   df_gt_lst <- map(1:nrow(GP), \(i) {
-    t_base <- GP[i, ]$group - 1
-    t_post <- GP[i, ]$period
+    G <- GP[i, ]$group
+    P <- GP[i, ]$period
 
-    # only valid for pre-treatment periods
-    # t_base <- GP[i, ]$period - 1
-    # t_post <- GP[i, ]$period
+    # TODO: add argument varying/base
+    if (GP[i, ]$period < GP[i, ]$group) {
+      t_base <- GP[i, ]$period - 1
+      t_post <- GP[i, ]$period
+    } else {
+      t_base <- GP[i, ]$group - 1
+      t_post <- GP[i, ]$period
+    }
 
     # Filter rows in df directly
     df_gt <- df[P %in% c(t_post, t_base) & G %in% c(0, GP[i, ]$group)]
