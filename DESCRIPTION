@@ -1,0 +1,20 @@
+Package: DrDiD
+Type: Package
+Title: Doubly Robust Difference-in-Differences Approach
+Version: 0.1.0
+Author: Oliver Mork
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Combines elements of imputation-based approach by Gardner (2021) <doi:10.48550/arXiv.2207.05943> and Borusyak (2021) <doi.org/10.48550/arXiv.2108.12419> with doubly robust group-time estimation by Callaway & Sant'Anna (2021) <doi.org/10.1016/j.jeconom.2020.12.001>.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.1
+Depends: 
+    R (>= 2.10),
+    fixest (>= 0.10.1)
+Imports: 
+    data.table,
+    stats
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
