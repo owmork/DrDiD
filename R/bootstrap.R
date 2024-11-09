@@ -25,7 +25,7 @@ bootstrap <- function(dp, B = 30) { # TODO: higher default
     # TODO: do not know why. should always exist
     if ("wname" %in% names(df_gt_long)) {df_gt_long[, wname := NULL]}
     df_gt_long <- merge(df_gt_long, unique(df[, .(id, wname)]), by = "id")
-    att_b <- predict_AIPW(mods, df_gt_long)
+    att_b <- predict_AIPW(mods, df_gt_long, print_info = FALSE)
     att_b[, b := b]
 
     return(att_b)

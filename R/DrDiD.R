@@ -59,7 +59,7 @@ DrDiD <- function(
   mods <- fit_nuisance_models(dp)
 
   # (c) Extract local group-time ATTs and long table of gt tables
-  att_obj <- get_attgt(mods, dp$data)
+  att_obj <- get_attgt(mods, dp$data, base_period)
   att <- att_obj$att
 
   # Add long table to "dp" for bootstraping
@@ -71,7 +71,7 @@ DrDiD <- function(
   # Print operation time
   end_time <- Sys.time()
   time_taken <- as.numeric(difftime(end_time, start_time, units = "mins"))
-  message(cat("Time taken for operation:", time_taken, "\n"))
+  #message(cat("Time taken for operation:", time_taken, "\n"))
 
   # Return list
   ret_lst <- list(

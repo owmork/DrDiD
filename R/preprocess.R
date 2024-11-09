@@ -47,7 +47,7 @@ preprocess <- function(
   # Remove observations with NAs
   NAs  <- !complete.cases(data)
   data <- data[!NAs, ]
-  message(sprintf("Dropping %i (%.1f %%) observations.", sum(NAs), 100*mean(NAs)))
+  message(sprintf("Dropping %i (%.1f %%) observations at fitting stage.", sum(NAs), 100*mean(NAs)))
 
   # Create "post" variable
   data$post <- (data$P >= data$G & data$D == 1)

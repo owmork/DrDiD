@@ -7,10 +7,11 @@
 #' @return Summary table of AIPW ATT estimates for each group-time in df.
 #'
 #' @export
-predict_AIPW <- function(mods, df) {
+predict_AIPW <- function(mods, df, print_info = TRUE) {
   # Predict unique covariate combinations
   covars <- unique(unlist(map(mods, ~all.vars(.x$fml))))
-  FEs <- unique(unlist(map(mods, ~.x$fixef_vars)))[1:2]
+  FEs <- unique(unlist(map(mods, ~.x$fixef_vars)))
+  FEs <- FEs[!grepl("\\^", FEs)] # remove interactions
   lhss <- c(covars, FEs)
 
   # Unique combinations
@@ -25,7 +26,7 @@ predict_AIPW <- function(mods, df) {
   # Merge back to full table and remove covariates and NAs
   df_gt_pred <- merge(df, df_gt_unq, by = lhss, all.x = TRUE)
   NAs <- !complete.cases(df_gt_pred[ , c("prop", "y_d0", "y_d10", "y_d11")])
-  message(sprintf("Dropping %i (%.1f %%) observations.", sum(NAs), 100*mean(NAs)))
+  if (print_info) {message(sprintf("Dropping %i (%.1f %%) observations at prediction stage.", sum(NAs), 100*mean(NAs)))}
   df_gt_pred <- df_gt_pred[!NAs, ]
   rm_lhs <- lhss[!lhss %in% c("D", "Y", "group_size")]
   df_gt_pred[, (rm_lhs) := NULL]
