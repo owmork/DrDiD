@@ -2,11 +2,12 @@
 #'
 #' @param dp Pre-processed data object
 #' @param B Number of bootstrap samples
+#' @param workers Number of workers for parallelization
 #'
 #' @return List of estimated group-time average treatment effects
 #'
 #' @export
-bootstrap <- function(dp, B = 30) { # TODO: higher default
+bootstrap <- function(dp, B = 30, workers) { # TODO: higher default
 
   # Get "original" data and "long" data
   df <- copy(dp$data)
@@ -29,7 +30,7 @@ bootstrap <- function(dp, B = 30) { # TODO: higher default
     att_b[, b := b]
 
     return(att_b)
-  })
+  }, mc.cores = workers)
 
   return(att_lst)
 }

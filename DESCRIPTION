@@ -14,6 +14,7 @@ Depends:
     fixest (>= 0.10.1)
 Imports: 
     data.table,
+    parallel,
     stats
 Suggests: 
     testthat (>= 3.0.0)

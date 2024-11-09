@@ -17,6 +17,7 @@
 #' those are assigned to either treatment and control group (idname) or in some applications, do not occur
 #' in post period (tname).
 #' @param B Number of boostrap samples in order to calculate standard errors
+#' @param cores Number of cores for parallelization
 #'
 #' @return Estimated ATT with boostrap standard errors
 #'
@@ -34,7 +35,8 @@ DrDiD <- function(
     FE_1 = ~0,
     FE_2 = ~0,
     base_period = c("varying", "universal"),
-    B = 30
+    B = 30,
+    cores = 4
 ) {
 
   # Count time
@@ -66,7 +68,7 @@ DrDiD <- function(
   dp$long <- att_obj$long
 
   # (d) Bootstrap inference
-  att_B <- bootstrap(dp, B) |> rbindlist()
+  att_B <- bootstrap(dp, B, workers = cores) |> rbindlist()
 
   # Print operation time
   end_time <- Sys.time()
