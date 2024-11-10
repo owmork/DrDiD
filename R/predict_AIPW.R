@@ -26,7 +26,7 @@ predict_AIPW <- function(mods, df, print_info = TRUE) {
   # Merge back to full table and remove covariates and NAs
   df_gt_pred <- merge(df, df_gt_unq, by = lhss, all.x = TRUE)
   NAs <- !complete.cases(df_gt_pred[ , c("prop", "y_d0", "y_d10", "y_d11")])
-  if (print_info) {message(sprintf("Dropping %i (%.1f %%) observations at prediction stage.", sum(NAs), 100*mean(NAs)))}
+  if (print_info) {message(sprintf("Dropping %i out of %i (%.1f %%) observations at prediction stage.", sum(NAs), sum(!NAs), 100*mean(NAs)))}
   df_gt_pred <- df_gt_pred[!NAs, ]
   rm_lhs <- lhss[!lhss %in% c("D", "Y", "group_size")]
   df_gt_pred[, (rm_lhs) := NULL]

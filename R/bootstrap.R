@@ -13,7 +13,7 @@ bootstrap <- function(dp, B = 30, workers) { # TODO: higher default
   df <- copy(dp$data)
   df_gt_long <- copy(dp$long)
 
-  att_lst <- map(1:B, \(b) {
+  att_lst <- mclapply(1:B, \(b) {
 
     # Clustered normalized bootstrap weights (by id)
     df <- df[, wname := rexp(1), by = id]
