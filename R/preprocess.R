@@ -9,10 +9,7 @@
 #' @param exp_link Link of the exposure/propensity model, can be e.g. "logit" or "identity"
 #' @param wname Weights
 #' @param xformla Covariates formula
-#' @param FE_1 Two-way fixed effects, e.g. time and region.
-#' @param FE_2 One-way fixed effects, e.g. region. Here, you cannot use same as "idname" and "tname" as
-#' those are assigned to either treatment and control group (idname) or in some applications, do not occur
-#' in post period (tname).
+#' @param FE All fixed effects
 #'
 #' @return Pre-processed data object/list.
 #'
@@ -27,8 +24,7 @@ preprocess <- function(
     exp_link,
     wname = NULL,
     xformla = ~0,
-    FE_1 = ~0,
-    FE_2 = ~0
+    FE = ~0
 ) {
 
   # Data frame without missing observations
@@ -41,7 +37,7 @@ preprocess <- function(
     G = data[, gname],
     P = data[, tname], # to avoid confusion with "TRUE" (instead P for period)
     Y = data[, yname],
-    data[, c(all.vars(xformla), all.vars(FE_1))]
+    data[, c(all.vars(xformla), all.vars(FE))]
   )
 
   # Remove observations with NAs
@@ -58,17 +54,18 @@ preprocess <- function(
   # Create formulas for outcome and propensity models
   setFixest_fml(
     ..covariates = xformla,
-    ..FE_time_state = FE_1,
-    ..FE_state = FE_2
+    ..FE = FE
   )
 
-  exp_link          <- if (exp_link == "identity") {gaussian(link = "identity")} else {binomial(link = "logit")}
-  exp_fmla          <- xpd(~ ..covariates | ..FE_time_state, lhs = "D")
-  out_ctr_fmla      <- xpd(~ ..covariates | ..FE_time_state, lhs = "Y")
-  out_trt_fmla      <- xpd(~ ..covariates | ..FE_state, lhs = "Y")
+  pre_fmla     <- xpd(~ 0 | ..FE, lhs = "Y")
+  exp_link     <- if (exp_link == "identity") {gaussian(link = "identity")} else {binomial(link = "logit")}
+  exp_fmla     <- xpd(~ ..covariates | ..FE, lhs = "D")
+  out_ctr_fmla <- xpd(~ ..covariates, lhs = "Y")
+  out_trt_fmla <- xpd(~ ..covariates, lhs = "Y")
 
   return_lst <- list(
     "data" = data,
+    "pre_fmla" = pre_fmla,
     "exp_link" = exp_link,
     "exp_fmla" = exp_fmla,
     "out_ctr_fmla" = out_ctr_fmla,

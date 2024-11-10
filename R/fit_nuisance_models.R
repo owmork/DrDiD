@@ -12,6 +12,18 @@ fit_nuisance_models <- function(preprocessed_list) {
   dp <- preprocessed_list
   dta <- dp$data
 
+  # Pre-step: model fixed effects
+  pre_mod <- feols(
+    fml = dp$pre_fmla,
+    data = dta[dta$D == 0, ],
+    weights = ~wname,
+    combine.quick=FALSE
+  )
+
+  # Subtract from Y (residualize)
+  Y_FE <- predict(pre_mod, dp$data)
+  dp$data$Y <- dp$data$Y - Y_FE
+
   # Estimate nuisance parameters
 
   # Exposure model (yields propensity scores)
@@ -47,10 +59,13 @@ fit_nuisance_models <- function(preprocessed_list) {
   )
 
   mods_lst <- list(
-    "exp" = exp_mod,
-    "out_ctr" = out_ctr_mod,
-    "out_trt_pre" = out_trt_pre_mod,
-    "out_trt_post" = out_trt_post_mod
+    "dp" = dp,
+    "mods" = list(
+      "exp" = exp_mod,
+      "out_ctr" = out_ctr_mod,
+      "out_trt_pre" = out_trt_pre_mod,
+      "out_trt_post" = out_trt_post_mod
+    )
   )
 
   return(mods_lst)

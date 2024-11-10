@@ -12,10 +12,7 @@
 #' @param base_period Whether to estimate pre-treatment ATTs. "universal" sets it to treatment - 1,
 #' "varying" selects the prior period and returns ATT for treatment - 1 instead of treating it as
 #' reference value. Post-treatment ATTs are unaffected.
-#' @param FE_1 Two-way fixed effects, e.g. time and region.
-#' @param FE_2 One-way fixed effects, e.g. region. Here, you cannot use same as "idname" and "tname" as
-#' those are assigned to either treatment and control group (idname) or in some applications, do not occur
-#' in post period (tname).
+#' @param FE All fixed effects
 #' @param B Number of boostrap samples in order to calculate standard errors
 #' @param cores Number of cores for parallelization
 #'
@@ -32,8 +29,7 @@ DrDiD <- function(
     exp_link = c("logit", "gaussian"),
     wname = NULL,
     xformla = ~0,
-    FE_1 = ~0,
-    FE_2 = ~0,
+    FE = ~0,
     base_period = c("varying", "universal"),
     B = 30,
     cores = 4
@@ -53,15 +49,15 @@ DrDiD <- function(
     exp_link = exp_link,
     wname = wname,
     xformla = xformla,
-    FE_1 <- FE_1,
-    FE_2 <- FE_2
+    FE = FE
   )
 
   # (b) Fit (global) nuisance parameters
   mods <- fit_nuisance_models(dp)
+  dp <- mods$dp
 
   # (c) Extract local group-time ATTs and long table of gt tables
-  att_obj <- get_attgt(mods, dp$data, base_period)
+  att_obj <- get_attgt(mods$mods, dp$data, base_period)
   att <- att_obj$att
 
   # Add long table to "dp" for bootstraping
